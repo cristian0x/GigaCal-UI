@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Button,
   TextField,
@@ -10,10 +11,14 @@ import {
   CircularProgress,
 } from "@mui/material";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import SignUpWithGoogleButton from "./SignUpWithGoogleButton";
 import ForgotPasswordButton from "./ForgotPasswordButton";
 import { useRouter } from "next/navigation";
+
+interface LoginResponse {
+  access_token: string;
+  refresh_token: string;
+}
 
 function LoginForm() {
   const { push } = useRouter();
@@ -27,21 +32,24 @@ function LoginForm() {
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     setLoading(true);
     e.preventDefault();
-
-    const res = await signIn("credentials", {
-      email: userInfo.email,
-      password: userInfo.password,
-      callbackUrl: process.env.NEXT_PUBLIC_NEXT_FRONTEND_PATH,
-      redirect: false,
-    });
-    console.log(res);
-
-    if (res?.error) {
-      setLoginError(res?.error);
-    } else {
-      push("/");
+    try {
+      const response = await axios.post<LoginResponse>(
+        `${process.env.NEXT_PUBLIC_SPRING_BOOT_BACKEND_PATH}/auth/authenticate`,
+        {
+          email: userInfo.email,
+          password: userInfo.password,
+          redirect: false,
+        }
+      );
+      console.log("Login successful");
+      sessionStorage.setItem("token", response.data.access_token);
+      push("/home")
+    } catch (error) {
+      console.log("Login error")
+      setLoginError(error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleCloseLoginErrorAlert = () => {
@@ -95,7 +103,7 @@ function LoginForm() {
         </Button>
         <div className="pt-10">
           <span className="text-base font-semibold text-center text-black/70">
-            Don't have an account?
+            Don&apost have an account?
           </span>
           <Link href="/signup">
             <span className="text-base font-semibold text-center text-[#4285f4] pl-2 cursor-pointer">

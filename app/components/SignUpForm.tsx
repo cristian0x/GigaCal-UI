@@ -34,8 +34,8 @@ function SignUpForm() {
     setLoading(true);
     console.log(userInfo);
 
-    await axios
-      .post<RegisterResponse>(
+    try {
+      const response = await axios.post<RegisterResponse>(
         `${process.env.NEXT_PUBLIC_SPRING_BOOT_BACKEND_PATH}/auth/register`,
         {
           username: userInfo.username,
@@ -43,18 +43,16 @@ function SignUpForm() {
           password: userInfo.password,
           redirect: false,
         }
-      )
-      .then((response) => {
-        console.log("Registration successful");
-        push("/signin");
-      })
-      .catch((error) => {
-        console.error("Registration error:", error);
-        setRegisterError(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      );
+      console.log("Registration successful");
+      console.log(response);
+      push("/signin");
+    } catch (error) {
+      console.error("Registration error:", error);
+      setRegisterError(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCloseRegisterErrorAlert = () => {

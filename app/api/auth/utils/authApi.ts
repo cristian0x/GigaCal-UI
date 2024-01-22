@@ -17,6 +17,7 @@ export async function authApi(credentials: Credentials): Promise<User | null> {
       `${process.env.NEXT_PUBLIC_SPRING_BOOT_BACKEND_PATH}/auth/authenticate`,
       credentials
     );
+    console.log("RESPONSE", response);
     return response.data;
   } catch (error) {
     console.error("Authentication error:", error);
