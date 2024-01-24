@@ -18,6 +18,7 @@ function SettingsModal(props: any) {
       newUserSettings.notificationChannelType = "NONE";
       newUserSettings.timeBeforeEvent = 0;
     }
+    console.log(newUserSettings);
 
     const responseEvent = await axios.put(
       `${process.env.NEXT_PUBLIC_SPRING_BOOT_BACKEND_PATH}/settings`,
@@ -30,6 +31,7 @@ function SettingsModal(props: any) {
     );
 
     const savedUserSettings = responseEvent.data;
+    console.log(savedUserSettings);
     setUserSettings(savedUserSettings);
     props.handleCloseModal();
   }
@@ -37,6 +39,7 @@ function SettingsModal(props: any) {
   const handleChangeNotificationsEnabled = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
+    console.log(userSettings.areNotificationsEnabled);
     setUserSettings({
       ...userSettings,
       areNotificationsEnabled: !userSettings.areNotificationsEnabled,
@@ -67,7 +70,9 @@ function SettingsModal(props: any) {
   };
 
   useEffect(() => {
-    setUserSettings(props.userSettings);
+    if (props.userSettings?.areNotificationsEnabled !== undefined) {
+      setUserSettings(props.userSettings);
+    }
   }, [props.userSettings]);
 
   return (
@@ -112,15 +117,16 @@ function SettingsModal(props: any) {
                     >
                       Settings
                     </Dialog.Title>
-                    <form
-                      action="submit"
-                      onSubmit={props.handleEditUserSettings}
-                    >
+                    <form action="submit" onSubmit={handleEditUserSettings}>
                       <div className="my-2 content-center text-black">
                         <FormControlLabel
                           control={
                             <GreenSwitch
-                              checked={userSettings.areNotificationsEnabled}
+                              checked={
+                                userSettings.areNotificationsEnabled
+                                  ? userSettings.areNotificationsEnabled
+                                  : false
+                              }
                               onChange={handleChangeNotificationsEnabled}
                               name="areNotificationsEnabled"
                             />
@@ -143,7 +149,7 @@ function SettingsModal(props: any) {
                                 value={
                                   userSettings.notificationChannelType
                                     ? userSettings.notificationChannelType
-                                    : ""
+                                    : "SMS"
                                 }
                                 onChange={handleChannelChange}
                               >
@@ -162,13 +168,17 @@ function SettingsModal(props: any) {
                               value={
                                 userSettings.timeBeforeEvent
                                   ? userSettings.timeBeforeEvent
-                                  : 0
+                                  : 15
                               }
                               onChange={(
                                 e: React.ChangeEvent<HTMLInputElement>
                               ) => handleTimeBeforeEventChange(e)}
-                              error={userSettings.timeBeforeEvent <= 0}
+                              error={
+                                userSettings.timeBeforeEvent &&
+                                userSettings.timeBeforeEvent <= 0
+                              }
                               helperText={
+                                userSettings?.timeBeforeEvent &&
                                 userSettings.timeBeforeEvent <= 0
                                   ? "Invalid value"
                                   : ""
