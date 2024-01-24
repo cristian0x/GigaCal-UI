@@ -53,12 +53,6 @@ const StyledToggleButtonGroup = withStyles((theme) => ({
   },
 }))(ToggleButtonGroup);
 
-// const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({}));
-
-// const StyledToggle = styled(ToggleButton)(({ theme }) => ({
-//   color: "#ffffff",
-// }));
-
 export const StyledToggle = withStyles({
   root: {
     color: "#000000",
@@ -84,7 +78,10 @@ export const StyledToggle = withStyles({
 })(ToggleButton);
 
 const ToggleDays = (props: any) => {
-  const [days, setDays] = useState<any>([]);
+  const [days, setDays] = useState<any>(
+    props.daysOfWeek.map((day: any) => Number(day))
+  );
+
   return (
     <>
       <StyledToggleButtonGroup
