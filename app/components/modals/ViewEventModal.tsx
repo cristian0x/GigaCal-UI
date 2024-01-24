@@ -12,9 +12,25 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ToggleDays from "../ToggleDays";
 import { GreenSwitch } from "../GreenSwitch";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import LinkIcon from "@mui/icons-material/Link";
 
 function ViewEventModal(props: any) {
+  const { push } = useRouter();
+
   const [savedEvent, setSavedEvent] = useState<any>({});
+  const isValidUrl = (urlString: any) => {
+    var urlPattern = new RegExp(
+      "^(https?:\\/\\/)?" + // validate protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // validate domain name
+        "((\\d{1,3}\\.){3}\\d{1,3}))" + // validate OR ip (v4) address
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // validate port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // validate query string
+        "(\\#[-a-z\\d_]*)?$",
+      "i"
+    ); // validate fragment locator
+    return !!urlPattern.test(urlString);
+  };
 
   useEffect(() => {
     if (props.newEvent?.start !== undefined) {
@@ -78,7 +94,7 @@ function ViewEventModal(props: any) {
                         label="Title"
                         value={savedEvent.title ? savedEvent.title : ""}
                         InputProps={{
-                          disabled: true,
+                          readOnly: true,
                         }}
                         size="small"
                       />
@@ -117,12 +133,12 @@ function ViewEventModal(props: any) {
                         {!savedEvent.allDay && (
                           <div className="flex justify-center gap-1 mt-2">
                             <TimePicker
-                              disabled
+                              readOnly
                               label="Start time"
                               value={dayjs(savedEvent.start)}
                             />
                             <TimePicker
-                              disabled
+                              readOnly
                               label="End time"
                               value={dayjs(savedEvent.end)}
                             />
@@ -130,12 +146,12 @@ function ViewEventModal(props: any) {
                         )}
                         <div className="flex justify-center gap-1 mt-2">
                           <DatePicker
-                            disabled
+                            readOnly
                             label="Start recurenncy"
                             value={dayjs(savedEvent.startRecur)}
                           />
                           <DatePicker
-                            disabled
+                            readOnly
                             label="End recurenncy"
                             value={dayjs(savedEvent.endRecur)}
                           />
@@ -146,12 +162,12 @@ function ViewEventModal(props: any) {
                         {!savedEvent.allDay && (
                           <div className="flex justify-center gap-1 mt-2">
                             <TimePicker
-                              disabled
+                              readOnly
                               label="Start time"
                               value={dayjs(savedEvent.start)}
                             />
                             <TimePicker
-                              disabled
+                              readOnly
                               label="End time"
                               value={dayjs(savedEvent.end)}
                             />
@@ -159,12 +175,12 @@ function ViewEventModal(props: any) {
                         )}
                         <div className="flex justify-center gap-1 mt-2">
                           <DatePicker
-                            disabled
+                            readOnly
                             label="Start date"
                             value={dayjs(savedEvent.start)}
                           />
                           <DatePicker
-                            disabled
+                            readOnly
                             label="End date"
                             value={dayjs(savedEvent.end)}
                           />
@@ -190,22 +206,21 @@ function ViewEventModal(props: any) {
                         <span className="font-bold">Invalid date</span>
                       </Alert>
                     </Stack>
+                    <button
+                      type="button"
+                      className="mt-3 inline-flex w-full justify-center rounded-md gap-1 bg-green-700 px-3 py-2 text-sm 
+                                    font-semibold text-white shadow-sm hover:bg-green-800 sm:mt-0 disabled:opacity-25"
+                      onClick={() => push(savedEvent.urlStr)}
+                      disabled={!isValidUrl(savedEvent.urlStr)}
+                    >
+                      <div className="text-base top-3 text-center">
+                        <p className="top-3">URL</p>
+                      </div>
+                    </button>
                     <div className="mt-2">
                       <TextField
                         InputProps={{
-                          disabled: true,
-                        }}
-                        fullWidth
-                        id="outlined-required"
-                        label="Url"
-                        value={savedEvent.urlStr ? savedEvent.urlStr : ""}
-                        size="small"
-                      />
-                    </div>
-                    <div className="mt-2">
-                      <TextField
-                        InputProps={{
-                          disabled: true,
+                          readOnly: true,
                         }}
                         fullWidth
                         id="outlined-required"

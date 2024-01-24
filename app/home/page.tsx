@@ -24,6 +24,7 @@ import CalendarModal from "../components/modals/CalendarModal";
 import DeleteCalendarModal from "../components/modals/DeleteCalendarModal";
 import { Calendar } from "../utils/calendar";
 import ViewEventModal from "../components/modals/ViewEventModal";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function Home() {
   const { push } = useRouter();
@@ -723,12 +724,28 @@ export default function Home() {
               eventClick={(data) => handleClickEventModal(data)}
             />
           </div>
-          <div className="ml-2 w-max border-2 p-2 rounded-md mt-5 lg:h-1/2 bg-white">
-            <h1 className="mb-2 font-bold text-lg text-center">
-              Change Calendar
-            </h1>
+          <div className="ml-2 w-[200px] border-2 justify-center rounded-md mt-1 lg:h-[69%] bg-white">
+            <div className="grid grid-cols-3 min-h-[48px] mb-3  w-full font-bold text-lg text-center bg-green-900 text-white rounded-md">
+              <div className="col-start-1 col-end-3">
+                <span className="inline-block align-middle my-2 pl-3">
+                  My Calendars
+                </span>
+              </div>
+              <div className="align-middle flex justify-center m-1.5 items-stretch col-start-3 justify-content">
+                <IconButton
+                  onClick={handleAddCalendarModal}
+                  className="hover:bg-gray-900 h-8 w-8 text-white bg-gray-800 col-start-3 rounded-full"
+                >
+                  <AddIcon />
+                </IconButton>
+              </div>
+            </div>
+
             {allCalendars.map((calendar) => (
-              <div key={calendar.id} className="flex justify-center gap-1">
+              <div
+                key={calendar.id}
+                className="px-2 mt-2 flex justify-center gap-1"
+              >
                 <CalendarButton
                   key={calendar.id}
                   onClick={() => setChosenCalendarId(calendar.id)}
@@ -754,13 +771,6 @@ export default function Home() {
                 </IconButton>
               </div>
             ))}
-            <Button
-              onClick={handleAddCalendarModal}
-              variant="contained"
-              className="p-1 m-1 mt-10 text-white w-full bg-green-800"
-            >
-              Add calendar
-            </Button>
           </div>
         </div>
         <Snackbar
